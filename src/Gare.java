@@ -3,18 +3,24 @@ import java.util.ArrayList;
 public class Gare 
 {
 	public int numero;
-	
-	ArrayList<Emplacement> emplacements;
-	public int MAX_EMPLACEMENT = 100;
-	
+	public ArrayList<String> ref_produits = new ArrayList<String>();
+		
 	public Gare(int i)
 	{
-		this.numero = i;
-		emplacements = new ArrayList<Emplacement>();
-		
-		for (i = 0; i < 100; i++)
+		this.numero = i;		
+	}
+	
+	//Dit si oui ou non la reference est dans la gare
+	public boolean referenceEstDansLaGare(String reference)
+	{
+		for(String ref : ref_produits)
 		{
-			emplacements.add(new Emplacement(i));
+			if(ref.compareToIgnoreCase(reference) == 0)
+			{
+				return true;
+			}
 		}
+		
+		return false;
 	}
 }

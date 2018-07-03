@@ -16,8 +16,8 @@ public class Colis extends Thread {
 	
 	public ArrayList<Produit> produits;
 	
-	public int espace_total = 10;
-	public int espace_utilise;
+	public double espace_total = 10;
+	public double espace_utilise;
 	
 	//Constructeur(produits, espace_utilise)
 	public Colis(ArrayList<Produit> p, int e)
@@ -35,6 +35,21 @@ public class Colis extends Thread {
 		espace_utilise = e;	
 	}
 	
+	public Colis()
+	{
+		reference =  new Date().getTime();
+
+		etat = "En preparation";
+		
+		produits = new ArrayList<Produit>();
+		
+		position_precedente_colis = 0;
+		position_colis = 0;
+		position_suivante_colis = 0;
+		
+		espace_utilise = 0;	
+	}
+	
 	
     @Override 
     public void run() { 
@@ -42,6 +57,8 @@ public class Colis extends Thread {
         {
         	ajoutDeLaReference();
         }
+        
+        
     } 
     
 	//Methodes
@@ -166,6 +183,39 @@ public class Colis extends Thread {
 			System.out.println("Référence ajoutée au colis " + produits.get(position - 1).ref_produit);	
 		}
 	}
+	
+	
+	//Ajouter un produit dans le carton
+	public void ajouterUnProduit(Produit produit)
+	{
+		produits.add(produit);
+		espace_utilise += arrondi(produit.espace);
+	}
+	
+	public boolean aDeLaPlace(Produit p) 
+	{
+		if(arrondi(espace_utilise)  + arrondi(p.espace) <= arrondi(espace_total))
+		{
+			return true;
+		} 
+		else
+		{
+			return false;
+		}
+	}
+	
+	private Double arrondi(Double d)
+	{
+		return Math.round(d *100.0)/100.0;
+	}
+	
+	public int getNombreProduits()
+	{
+		return produits.size();
+	}
+
+	
+	
 	
 	
 	

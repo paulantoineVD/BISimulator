@@ -1,13 +1,25 @@
+import java.lang.reflect.GenericSignatureFormatError;
 import java.util.ArrayList;
+
+import org.bson.Document;
+import org.bson.conversions.Bson;
+import org.bson.types.ObjectId;
+
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
 
 public class Main 
 {
 	
 	public static void main(String[] args)
 	{
+		
 		//Initialisation de la chaine de production
 		Preparation preparation = new Preparation();
-		
+		preparation.start();
 		/*
 		while(true)
 		{
@@ -44,17 +56,22 @@ public class Main
 		System.out.println(carton.espace_utilise);
 		*/
 		
+		
+		/*
 		ArrayList<Produit> produits = new ArrayList<Produit>();
 		int e = 10;
 		
-		produits.add(new Produit("Acidofolio", "Sachet", 5));
-		produits.add(new Produit("Schtroumf", "Sachet", 12));
-		produits.add(new Produit("Dragibus", "Sachet", 21));
-		produits.add(new Produit("Acidofolio", "Boite", 24));
-		produits.add(new Produit("Dragibus", "Boite", 30));
+		produits.add(new Produit("Acidofolio", "Sachet", 1));
+		produits.add(new Produit("Schtroumf", "Sachet", 1));
+		produits.add(new Produit("Dragibus", "Sachet", 1));
+		produits.add(new Produit("Acidofolio", "Boite", 2));
+		produits.add(new Produit("Dragibus", "Boite", 2));
 
 		
 		Colis colis = new Colis(produits, e);
 		colis.start();
+		*/
 	}
+	
+
 }

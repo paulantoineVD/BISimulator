@@ -17,5 +17,17 @@ public class Boucle {
 		}
 	}
 	
+	public Gare getGareNumero(int numero)
+	{
+		for(Gare g : gares)
+		{
+			if (g.numero == numero)
+			{
+				return g;
+			}
+		}
+		
+		return null;
+	}
 	
 }

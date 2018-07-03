@@ -66,8 +66,6 @@ public class Carton extends Thread {
 		return true;
 	}
 	
-
-	
 	public void seDeplacer()
 	{
 		Gare gare = gares.get(0);
