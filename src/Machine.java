@@ -29,6 +29,7 @@ public class Machine {
 		this.cadence = 0;
 		this.changement = 0;
 	}
+	
 	public Machine(int cadence, int changement) {
 		this.cadence = cadence;
 		this.changement = changement;

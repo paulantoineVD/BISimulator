@@ -19,5 +19,4 @@ public class Fabrication extends Machine{
 		super(cadence, changement);
 		this.variante = variante;
 	}
-	
 }
