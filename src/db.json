@@ -1,0 +1,94 @@
+{
+  "_id": {
+    "$oid": "5b3b519e2cf451460bee1e63"
+  },
+  "lignesCommande": [
+    {
+      "_id": {
+        "$oid": "5b3b519e2cf451460bee1e65"
+      },
+      "conditionnement": "Boite",
+      "quantity": 180,
+      "product": "Starmint",
+      "reference": "14-2-1-1-1",
+      "composants": [
+        {
+          "_id": {
+            "$oid": "5b3b519e2cf451460bee1e66"
+          },
+          "additifs": 9,
+          "enrobage": 9,
+          "arome": 4,
+          "gelifiant": 1,
+          "sucre": 10
+        }
+      ],
+      "prix": 3.69,
+      "frais": [
+        {
+          "_id": {
+            "$oid": "5b3b519e2cf451460bee1e67"
+          },
+          "fabrication": 0.14,
+          "conditionnement": 0.09,
+          "expedition": 0.18,
+          "general": 0.15
+        }
+      ],
+      "color": "Jaune",
+      "variante": "Sucre",
+      "texture": "dur"
+    },
+    {
+      "_id": {
+        "$oid": "5b3b519e2cf451460bee1e68"
+      },
+      "conditionnement": "Sachet",
+      "quantity": 396,
+      "product": "Chamallows",
+      "reference": "22-4-0-1-0",
+      "composants": [
+        {
+          "_id": {
+            "$oid": "5b3b519e2cf451460bee1e69"
+          },
+          "additifs": 4,
+          "enrobage": 9,
+          "arome": 1,
+          "gelifiant": 2,
+          "sucre": 10
+        }
+      ],
+      "prix": 2.04,
+      "frais": [
+        {
+          "_id": {
+            "$oid": "5b3b519e2cf451460bee1e6a"
+          },
+          "fabrication": 0.16,
+          "conditionnement": 0.11,
+          "expedition": 0.13,
+          "general": 0.11
+        }
+      ],
+      "color": "Bleu",
+      "variante": "Acide",
+      "texture": "dur"
+    }
+  ],
+  "dateCommande": {
+    "$date": "2018-01-03T00:00:00.000Z"
+  },
+  "dateEnvoiPrevu": {
+    "$date": "2018-01-10T00:00:00.000Z"
+  },
+  "country": {
+    "_id": {
+      "$oid": "5b3b519e2cf451460bee1e64"
+    },
+    "name": "Lituanie",
+    "transport_max": 33
+  },
+  "etat": "Commande",
+  "__v": 0
+}
