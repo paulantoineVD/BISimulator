@@ -1,6 +1,10 @@
 import java.lang.reflect.GenericSignatureFormatError;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
+import org.bson.BsonDateTime;
+import org.bson.BsonDocument;
+import org.bson.BsonString;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
@@ -10,6 +14,7 @@ import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Updates;
 
 public class Main 
 {
@@ -20,57 +25,42 @@ public class Main
 		//Initialisation de la chaine de production
 		Preparation preparation = new Preparation();
 		preparation.start();
-		/*
-		while(true)
-		{
-			//récupération des commandes à préparer
-			
-		}
-		*/
-
-		/*
-		Produit produit = new Produit("Dragibus", "Sachet");
-		Produit produit2 = new Produit("Mnms", "Boite");
-		
-		Carton carton = new Carton();
-		carton.AjouterUnProduit(produit);
-		carton.AjouterUnProduit(produit2);
-		
-		Gare gare1 = new Gare(0);
-		Gare gare2 = new Gare(1);
-		Gare gare3 = new Gare(2);
-		
-		carton.ajouterUneGare(gare1);
-		carton.ajouterUneGare(gare2);
-		carton.ajouterUneGare(gare3);
-		
-		System.out.println(carton.gares.size());
-		
-		carton.retirerUneGare();
-		carton.retirerUneGare();
-		
-		System.out.println(carton.gares.get(0).numero);
-		
-		
-		System.out.println(carton.ref_carton);
-		System.out.println(carton.espace_utilise);
-		*/
-		
 		
 		/*
-		ArrayList<Produit> produits = new ArrayList<Produit>();
-		int e = 10;
+		//Connexion à la base de données
+		MongoClient client = new MongoClient(new MongoClientURI("mongodb://projet:projetb1@ds227171.mlab.com:27171/projetbi?retryWrites=true"));
+		MongoDatabase db = client.getDatabase("projetbi");
 		
-		produits.add(new Produit("Acidofolio", "Sachet", 1));
-		produits.add(new Produit("Schtroumf", "Sachet", 1));
-		produits.add(new Produit("Dragibus", "Sachet", 1));
-		produits.add(new Produit("Acidofolio", "Boite", 2));
-		produits.add(new Produit("Dragibus", "Boite", 2));
-
 		
-		Colis colis = new Colis(produits, e);
-		colis.start();
-		*/
+		MongoCollection<Document> collection = db.getCollection("commandes");
+		
+		Document doc = collection.find().first();
+		System.out.println(doc.toJson());
+		
+		Object d = doc.get("_id");
+		System.out.println(doc.get("_id"));
+		System.out.println(doc.get("etat"));
+		
+		Bson filtre = Filters.eq("_id", doc.get("_id"));
+		Bson newValue = Updates.set("etat", "Envoyee");    				    				
+		collection.updateOne(filtre, newValue);
+		
+		Document doc2 = collection.find().first();
+		
+		System.out.println(doc2.get("_id"));
+		System.out.println(doc2.get("etat"));
+		/*
+		MongoCollection<Document> collection = db.getCollection("commandes");
+		
+		Bson filtre = Filters.eq("_id", "5b3ce54599c30f3db7852a07");
+		Bson dateEnvoi = Updates.currentDate("dateEnvoiPrevu");
+		collection.updateOne(filtre, dateEnvoi);
+		 */
+			//		collection.updateOne(filtre, document);
+		
+		//client.close();
+		
+		
 	}
 	
 

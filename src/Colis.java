@@ -1,10 +1,11 @@
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.UUID;
 
 public class Colis extends Thread {
 
 	//Variables
-	public Long reference;
+	public String reference;
 	public String etat;
 	
 	public int position_precedente_colis;
@@ -14,32 +15,20 @@ public class Colis extends Thread {
 	
 	public int position;
 	
+	int temps_pause_trajet = 0;
+	int temps_pause_gare = 0;
+	
 	public ArrayList<Produit> produits;
 	
 	public double espace_total = 10;
 	public double espace_utilise;
 	
-	//Constructeur(produits, espace_utilise)
-	public Colis(ArrayList<Produit> p, int e)
-	{
-		reference =  new Date().getTime();
-		
-		etat = "En preparation";
-		
-		produits = p;
-		
-		position_precedente_colis = 0;
-		position_colis = 0;
-		position_suivante_colis = 0;
-		
-		espace_utilise = e;	
-	}
-	
+
 	public Colis()
 	{
-		reference =  new Date().getTime();
+		reference =  UUID.randomUUID().toString();
 
-		etat = "En preparation";
+		etat = "En attente";
 		
 		produits = new ArrayList<Produit>();
 		
@@ -53,12 +42,13 @@ public class Colis extends Thread {
 	
     @Override 
     public void run() { 
+    	//System.out.println("Début de la préparation du colis : " + reference);
+    	etat = "En preparation";
+    	
         while(seDeplacer())
         {
         	ajoutDeLaReference();
-        }
-        
-        
+        }       
     } 
     
 	//Methodes
@@ -67,8 +57,7 @@ public class Colis extends Thread {
 	public boolean seDeplacer()
 	{
 		int difference = 0;
-		int temps_pause_trajet = 8000;
-		
+
 		
 		try
 		{
@@ -102,12 +91,12 @@ public class Colis extends Thread {
 			if(position_colis != position_precedente_colis && position_colis == position_suivante_colis)
 			{	
 				try {
-					this.sleep(8000 * difference);
+					this.sleep(temps_pause_trajet * difference);
 				} catch (InterruptedException e) {
 					System.out.println("Aucune pause lors du déplacement");
 				}
 
-				System.out.println("Le colis est arrivé à la gare n°" + position_colis);
+				//System.out.println("Le colis de REF : " + this.reference + " est arrivé à la gare n°" + position_colis);
 				position++;
 			}
 			else if (position_colis == position_precedente_colis && position_colis == position_suivante_colis)
@@ -121,12 +110,12 @@ public class Colis extends Thread {
 			else
 			{
 				try {
-					this.sleep(8000 * difference);
+					this.sleep(temps_pause_trajet * difference);
 				} catch (InterruptedException e) {
 					System.out.println("Aucune pause lors du déplacement");
 				}
 				
-				System.out.println("Le colis est arrivé à la gare n°" + position_colis);
+				//System.out.println("Le colis est arrivé à la gare n°" + position_colis);
 				position++;		
 			}
 		}
@@ -143,14 +132,14 @@ public class Colis extends Thread {
 			}
 			
 			try {
-				this.sleep(8000 * difference);
+				this.sleep(temps_pause_trajet * difference);
 			} catch (InterruptedException e) {
 				System.out.println("Aucune pause lors du déplacement");
 			}
 			
 			//Il n'y a plus de référence à ajouter on sort
 			etat = "A envoyer";
-			System.out.println("Fin de la préparation du colis REF: " + reference);
+			//System.out.println("Fin de la préparation du colis REF: " + reference);
 			return false;
 		}
 		
@@ -163,24 +152,24 @@ public class Colis extends Thread {
 		if (position_colis == position_precedente_colis && position_colis == position_suivante_colis)
 		{
 			produits.get(position - 1).Ajouter();
-			System.out.println("Référence ajoutée au colis " + produits.get(position - 1).ref_produit);	
+			//System.out.println("Référence REF " + produits.get(position - 1).ref_produit + "ajoutée au colis REF : " + reference );	
 		}
 		else if (position_colis == position_precedente_colis && position_colis != position_suivante_colis )
 		{
 			produits.get(position - 1).Ajouter();
-			System.out.println("Référence ajoutée au colis " + produits.get(position - 1).ref_produit);	
+			//System.out.println("Référence REF: " + produits.get(position - 1).ref_produit + "ajoutée au colis REF : " + reference);	
 		}
 		else
 		{		
-			System.out.println("En attente de(s) référence(s)");
+			//System.out.println("En attente de(s) référence(s)");
 
 			try {
-				this.sleep(16000);
+				this.sleep(temps_pause_gare);
 			} catch (InterruptedException e) {
 				System.out.println("Aucune pause lors de l'ajout de la référence");
 			}
 			produits.get(position - 1).Ajouter();
-			System.out.println("Référence ajoutée au colis " + produits.get(position - 1).ref_produit);	
+			//System.out.println("Référence REF: " + produits.get(position - 1).ref_produit + " ajoutée au colis REF " + reference);	
 		}
 	}
 	
@@ -214,6 +203,42 @@ public class Colis extends Thread {
 		return produits.size();
 	}
 
+	
+	public void trierColis()
+	{
+		ArrayList<Produit> produitTrier = new ArrayList<Produit>();
+		int indexProduit = 0;
+		int numeroGare = 41;
+		
+		//
+		while(produits.size() != 0)
+		{			
+			for(int i = 0; i < produits.size(); i++)
+			{
+				if(produits.get(i).numeroDeGare < numeroGare)
+				{
+					numeroGare = produits.get(i).numeroDeGare;
+					indexProduit = i;
+				}
+			}
+			
+			numeroGare = 41;
+			produitTrier.add(produits.get(indexProduit));
+			produits.remove(indexProduit);
+		}
+		
+		
+		produits = produitTrier;
+	}
+	
+	public void afficherGares()
+	{
+		for(Produit p : produits)
+		{
+			System.out.println(p.numeroDeGare);
+		}
+	}
+	
 	
 	
 	

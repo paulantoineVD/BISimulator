@@ -15,9 +15,14 @@ public class Preparation extends Thread {
 	
 	ArrayList<Boucle> boucles = new ArrayList<Boucle>();
 	ArrayList<String> references;
+	ArrayList<Commande> commandes;
+	
+	Entrepot entrepot;
 	
 	public Preparation()
 	{
+		entrepot = new Entrepot();
+		
 		//Génération des références
 		references = genererReference();
 		
@@ -77,30 +82,46 @@ public class Preparation extends Thread {
     @Override 
     public void run() { 
 
-		ArrayList<Commande> commandes = recupererLesCommandes();
-		
-		
-		for(Commande c : commandes)
-		{
-			System.out.println("Commande :");
-			System.out.println("REF: " + c.reference);
-			System.out.println("Nombre de carton : " + c.getNombreColis());
-			
-			for(Colis co : c.colis)
+    	boolean enCours = true;
+    	
+    	while(enCours)
+    	{
+	    	commandes = recupererLesCommandes();
+	    	System.out.println(commandes.size());
+	    	
+			for(Commande c : commandes)
 			{
-				System.out.println("\t- Nb produits : " + co.getNombreProduits());
-				System.out.println("\t- Espace utilisé : " + co.espace_utilise);
-
-				/*
-				for(Produit p : co.produits)
-				{
-					System.out.println("\t \t- " + p.espace);
-				}*/
+				System.out.println("Préparation de la commande : " + c.reference);
+				c.start();
+				
+				try {
+					this.sleep(0);
+				} catch (InterruptedException e) {
+					System.out.println("Aucune pause lors de l'ajout de la référence");
+				}
 			}
-		}
-		
+			
+	   		retirerCommande();
+
+    	}
+    	
+		entrepot.fermer();
+		System.out.println("Fin");
     } 
 	
+    public void retirerCommande()
+    {
+    	int i = 0;
+    	for(Commande c : commandes)
+    	{
+    		if(c.etat == "Envoiee")
+    		{
+    			commandes.remove(i);
+    		}
+    		
+    		i++;
+    	}
+    }
 	
 	//Recupere la gare n*x
 	public Gare getGare(int numero)
@@ -178,8 +199,9 @@ public class Preparation extends Thread {
 		MongoClient client = new MongoClient(new MongoClientURI("mongodb://projet:projetb1@ds227171.mlab.com:27171/projetbi?retryWrites=true"));
 		MongoDatabase db = client.getDatabase("projetbi");
 		
-		MongoCollection<Document> collection = db.getCollection("commandes");
 		
+		MongoCollection<Document> collection = db.getCollection("commandes");
+
 		//Recuperation des commandes
 		Bson filtre = Filters.eq("etat", "Preparation");
 		for (Document commande : collection.find(filtre))
@@ -188,15 +210,18 @@ public class Preparation extends Thread {
 			//System.out.println("ref_commande :" + commande.get("_id"));
 			ArrayList<Document> lignes = (ArrayList<Document>)commande.get("lignesCommande");
 			
+
 			//Recuperation de l'id de la commande
-			String id = ((ObjectId)commande.get("_id")).toString();
-			Commande cmd = new Commande(id);
+			Object id = commande.get("_id");
+			String name_country = ((Document) commande.get("country")).getString("name");
+			
+			Commande cmd = new Commande(id, name_country, this);
 			
 
 			//Insertion des produits dans les commandes
 			for (Document ligne : lignes)
 			{
-				//System.out.println("\n\tProduit N*"+ cpt + " : ");
+				//System.out.println("\n\tProduit N* : ");
 				//System.out.println("\tref : " + ligne.get("reference"));
 				//System.out.println("\tConditionnement : " + ligne.get("conditionnement") + "\n");
 				
