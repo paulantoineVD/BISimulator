@@ -15,7 +15,7 @@ public class Preparation extends Thread {
 	
 	ArrayList<Boucle> boucles = new ArrayList<Boucle>();
 	ArrayList<String> references;
-	ArrayList<Commande> commandes;
+	ArrayList<Commande> commandes = new ArrayList<Commande>();
 	
 	Entrepot entrepot;
 	
@@ -86,8 +86,7 @@ public class Preparation extends Thread {
     	
     	while(enCours)
     	{
-	    	commandes = recupererLesCommandes();
-	    	System.out.println(commandes.size());
+	    	recupererLesCommandes();
 	    	
 			for(Commande c : commandes)
 			{
@@ -114,7 +113,7 @@ public class Preparation extends Thread {
     	int i = 0;
     	for(Commande c : commandes)
     	{
-    		if(c.etat == "Envoiee")
+    		if(c.etat == "Envoi" || c.etat == "Envoyee")
     		{
     			commandes.remove(i);
     		}
@@ -190,11 +189,8 @@ public class Preparation extends Thread {
 		return references;
 	}
 	
-	private ArrayList<Commande> recupererLesCommandes()
-	{
-
-		ArrayList<Commande> commandes = new ArrayList<Commande>();
-		
+	private void recupererLesCommandes()
+	{		
 		//Connexion à la base de données
 		MongoClient client = new MongoClient(new MongoClientURI("mongodb://projet:projetb1@ds227171.mlab.com:27171/projetbi?retryWrites=true"));
 		MongoDatabase db = client.getDatabase("projetbi");
@@ -205,7 +201,7 @@ public class Preparation extends Thread {
 		//Recuperation des commandes
 		Bson filtre = Filters.eq("etat", "Preparation");
 		for (Document commande : collection.find(filtre))
-		{
+		{			
 			//System.out.println("");
 			//System.out.println("ref_commande :" + commande.get("_id"));
 			ArrayList<Document> lignes = (ArrayList<Document>)commande.get("lignesCommande");
@@ -242,9 +238,8 @@ public class Preparation extends Thread {
 			commandes.add(cmd);
 		}
 		
-		System.out.println(commandes.size() + " commandes en attentes de préparation...");	
+		System.out.println(commandes.size() + " commandes a preparer...");	
 		client.close();	
 		
-		return commandes;
 	}
 }

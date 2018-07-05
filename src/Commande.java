@@ -60,8 +60,8 @@ public class Commande extends Thread {
         {}          
         
         etat = "Envoi";
-        System.out.println("Commande " + reference + " ENVOI");
         preparation.entrepot.receptionnerCommandes(this);
+        
     } 
     
 	private boolean commandeEstPrete()

@@ -55,9 +55,6 @@ public class Zone extends Thread {
 	
     @Override 
     public void run() { 
-    	
-		
-
     	estOuvert = true;
     	
     	while(estOuvert)
@@ -82,9 +79,7 @@ public class Zone extends Thread {
     public boolean envoyer()
     {
     	int nombreColis = 0;
-    	int nombreColisCmdSuivante = 0;
-    	
-    	
+    	int nombreColisCmdSuivante = 0;  	
     	
     	try
     	{
